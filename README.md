@@ -25,10 +25,10 @@ Edit your weapons to follow the structure shown here
             ammoname = 'ammo-shotgun',
             client = {
                 add = function()
-                    exports['gl-items']:putOnBack(`WEAPON_HEAVYSHOTGUN`)
+                    exports['obackweapon']:putOnBack(`WEAPON_HEAVYSHOTGUN`)
                 end,
                 remove = function()
-                    exports['gl-items']:removeFromInv(`WEAPON_HEAVYSHOTGUN`)
+                    exports['obackweapon']:removeFromInv(`WEAPON_HEAVYSHOTGUN`)
                 end
             }
         },
@@ -40,10 +40,10 @@ Edit your weapons to follow the structure shown here
             ammoname = 'ammo-rifle',
             client = {
                 add = function()
-                    exports['gl-items']:putOnBack(`WEAPON_HEAVYSNIPER`)
+                    exports['obackweapon']:putOnBack(`WEAPON_HEAVYSNIPER`)
                 end,
                 remove = function()
-                    exports['gl-items']:removeFromInv(`WEAPON_HEAVYSNIPER`)
+                    exports['obackweapon']:removeFromInv(`WEAPON_HEAVYSNIPER`)
                 end
             }
         },
@@ -56,10 +56,10 @@ Edit your weapons to follow the structure shown here
             ammoname = 'ammo-rpg',
             client = {
                 add = function()
-                    exports['gl-items']:putOnBack(`WEAPON_RPG`)
+                    exports['obackweapon']:putOnBack(`WEAPON_RPG`)
                 end,
                 remove = function()
-                    exports['gl-items']:removeFromInv(`WEAPON_RPG`)
+                    exports['obackweapon']:removeFromInv(`WEAPON_RPG`)
                 end
             }
         },
