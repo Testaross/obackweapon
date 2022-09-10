@@ -190,5 +190,11 @@ function removeFromSlot(hash)
 end
 
 --This will be a death check when ya know it happens once i do an ems script or something
-
-
+--Uncomment for esx death check
+-- AddEventHandler('esx:onPlayerSpawn', function()
+--     local ped = PlayerPedId()
+--     if isDead then
+--         isDead = false
+--         exports['obackweapon']:respawningCheckWeapon()
+--     end
+-- end)
