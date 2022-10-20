@@ -67,8 +67,48 @@ local slots = {
 
 }
 
+
+AddEventHandler('esx:onPlayerSpawn', function()
+    for k, v in pairs(Weapons) do
+        local count = exports.ox_inventory:Search('count', v.item)
+        if count > 0 then
+            putOnBack(k)
+        end
+    end
+end)
+
 RegisterNetEvent('ox_inventory:setPlayerInventory',function(currentDrops, inventory, weight, player, source)
     Wait(13000)
+    for k, v in pairs(Weapons) do
+        local count = exports.ox_inventory:Search(2, v.item)
+        if count > 0 then
+            putOnBack(k)
+        end
+    end
+end)
+
+-- uncheck this you want dont use esx
+-- AddEventHandler('ox_inventory:itemCount', function(name, count)
+--     for k, v in pairs(Weapons) do
+--         local count = exports.ox_inventory:Search(2, v.item)
+--         if count > 0 then
+--             putOnBack(k)
+--         else
+--             removeFromInv(k)
+--         end
+--     end
+-- end)
+
+AddEventHandler('esx:removeInventoryItem', function(hash, count)
+    for k, v in pairs(Weapons) do
+        local count = exports.ox_inventory:Search(2, v.item)
+        if count == 0 then
+            removeFromInv(k)
+        end
+    end
+end)
+
+AddEventHandler('esx:addInventoryItem', function(name, count)
     for k, v in pairs(Weapons) do
         local count = exports.ox_inventory:Search(2, v.item)
         if count > 0 then
@@ -81,6 +121,7 @@ AddEventHandler('ox_inventory:currentWeapon', function(data)
     if data then
         for k, v in pairs (Weapons) do
             if k == data.hash then
+                print(data.hash)
                 curWeapon = data.hash
                 removeWeapon(data.hash)
             end
@@ -92,6 +133,7 @@ AddEventHandler('ox_inventory:currentWeapon', function(data)
     end
 end)
 
+
 function removeWeapon(hash)
     for k, v in pairs(Weapons) do
         if hash == k then
@@ -100,13 +142,9 @@ function removeWeapon(hash)
     end
 end
 
-exports("removeWeapon", removeWeapon)
-
 function removeFromInv(hash)
     removeFromSlot(hash)
 end
-
-exports("removeFromInv", removeFromInv)
 
 function putOnBack(hash)
     local whatSlot = checkForSlot(hash)
@@ -114,8 +152,8 @@ function putOnBack(hash)
         curWeapon = nil
         local object = Weapons[hash].object
         if not HasModelLoaded(object) then
-          RequestModel(object)
-          Wait(10)
+            RequestModel(object)
+            Wait(10)
         end
         local coords = GetEntityCoords(PlayerPedId())
         local prop = CreateObject(object, coords,  true,  true, true)
@@ -125,13 +163,11 @@ function putOnBack(hash)
     end
 end
 
-exports("putOnBack", putOnBack)
-
 function respawningCheckWeapon()
     for k, v in pairs(slots) do
         if v.entity ~= nil then
             if DoesEntityExist(v.entity) then
-                 DeleteEntity(v.entity)
+                    DeleteEntity(v.entity)
             end
             local whatItem = Weapons[v.hash].item
             local count = exports.ox_inventory:Search(2, whatItem)
@@ -144,8 +180,6 @@ function respawningCheckWeapon()
         end
     end
 end
-
-exports("respawningCheckWeapon", respawningCheckWeapon)
 
 function checkForSlot(hash)
     local result = nil
@@ -189,12 +223,10 @@ function removeFromSlot(hash)
     end
 end
 
---This will be a death check when ya know it happens once i do an ems script or something
---Uncomment for esx death check
--- AddEventHandler('esx:onPlayerSpawn', function()
---     local ped = PlayerPedId()
---     if isDead then
---         isDead = false
---         exports['obackweapon']:respawningCheckWeapon()
---     end
--- end)
+AddEventHandler('esx:onPlayerSpawn', function()
+    local ped = PlayerPedId()
+    if isDead then
+        isDead = false
+        exports['obackweapon']:respawningCheckWeapon()
+    end
+end)
