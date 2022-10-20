@@ -13,6 +13,6 @@ author       'Kallock'
 --[[ Manifest ]]--
 
 client_scripts {
-	'main.lua',
+	'client.lua',
 }
 
