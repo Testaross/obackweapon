@@ -156,10 +156,10 @@ function putOnBack(hash)
             Wait(10)
         end
         local coords = GetEntityCoords(PlayerPedId())
-        local prop = CreateObject(object, coords,  true,  true, true)
+        local prop = CreateObject(object, coords.x, coords.y, coords.z,  true,  true, true)
         slots[whatSlot].entity = prop
         slots[whatSlot].hash = hash
-        AttachEntityToEntity(prop, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 24816), slots[whatSlot].pos, Weapons[hash].rot, 1, 1, 0, 0, 2, 1)
+        AttachEntityToEntity(prop, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 24816), slots[whatSlot].pos.x, slots[whatSlot].pos.y, slots[whatSlot].pos.z, Weapons[hash].rot.x, Weapons[hash].rot.y, Weapons[hash].rot.z, true, true, false, true, 2, true)
     end
 end
 
