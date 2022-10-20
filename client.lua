@@ -68,54 +68,6 @@ local slots = {
 }
 
 
-AddEventHandler('esx:onPlayerSpawn', function()
-    for k, v in pairs(Weapons) do
-        local count = exports.ox_inventory:Search('count', v.item)
-        if count > 0 then
-            putOnBack(k)
-        end
-    end
-end)
-
-RegisterNetEvent('ox_inventory:setPlayerInventory',function(currentDrops, inventory, weight, player, source)
-    Wait(13000)
-    for k, v in pairs(Weapons) do
-        local count = exports.ox_inventory:Search(2, v.item)
-        if count > 0 then
-            putOnBack(k)
-        end
-    end
-end)
-
--- uncheck this you want dont use esx
--- AddEventHandler('ox_inventory:itemCount', function(name, count)
---     for k, v in pairs(Weapons) do
---         local count = exports.ox_inventory:Search(2, v.item)
---         if count > 0 then
---             putOnBack(k)
---         else
---             removeFromInv(k)
---         end
---     end
--- end)
-
-AddEventHandler('esx:removeInventoryItem', function(hash, count)
-    for k, v in pairs(Weapons) do
-        local count = exports.ox_inventory:Search(2, v.item)
-        if count == 0 then
-            removeFromInv(k)
-        end
-    end
-end)
-
-AddEventHandler('esx:addInventoryItem', function(name, count)
-    for k, v in pairs(Weapons) do
-        local count = exports.ox_inventory:Search(2, v.item)
-        if count > 0 then
-            putOnBack(k)
-        end
-    end
-end)
 
 AddEventHandler('ox_inventory:currentWeapon', function(data)
     if data then
@@ -156,10 +108,10 @@ function putOnBack(hash)
             Wait(10)
         end
         local coords = GetEntityCoords(PlayerPedId())
-        local prop = CreateObject(object, coords.x, coords.y, coords.z,  true,  true, true)
+        local prop = CreateObject(object, coords,  true,  true, true)
         slots[whatSlot].entity = prop
         slots[whatSlot].hash = hash
-        AttachEntityToEntity(prop, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 24816), slots[whatSlot].pos.x, slots[whatSlot].pos.y, slots[whatSlot].pos.z, Weapons[hash].rot.x, Weapons[hash].rot.y, Weapons[hash].rot.z, true, true, false, true, 2, true)
+        AttachEntityToEntity(prop, PlayerPedId(), GetPedBoneIndex(PlayerPedId(), 24816), slots[whatSlot].pos, Weapons[hash].rot, 1, 1, 0, 0, 2, 1)
     end
 end
 
@@ -223,3 +175,53 @@ function removeFromSlot(hash)
     end
 end
 
+AddEventHandler('ox_inventory:updateInventory', function(changes)
+    for k, v in pairs(Weapons) do
+        local count = exports.ox_inventory:Search(2, v.item)
+        if count > 0 then
+            putOnBack(k)
+        else
+            removeFromInv(k)
+        end
+    end
+end)
+
+-- AddEventHandler('ox_inventory:updateInventory', function(changes)
+--     print(json.encode(changes,{indent=true}))
+--     if (type(changes) == 'table') then print('boolean') return end
+--     for k, v in pairs(changes) do 
+--         if (type(changes) == 'table') then print('boolean') return end
+--         print(v.name)
+--         print(v.count)
+--     end
+-- end)
+
+function DumpTable(table, nb)
+    if nb == nil then
+        nb = 0
+    end
+
+    if type(table) == 'table' then
+        local s = ''
+        for i = 1, nb + 1, 1 do
+            s = s .. "    "
+        end
+
+        s = '{\n'
+        for k, v in pairs(table) do
+            if type(k) ~= 'number' then k = '"' .. k .. '"' end
+            for i = 1, nb, 1 do
+                s = s .. "    "
+            end
+            s = s .. '[' .. k .. '] = ' .. DumpTable(v, nb + 1) .. ',\n'
+        end
+
+        for i = 1, nb, 1 do
+            s = s .. "    "
+        end
+
+        return s .. '}'
+    else
+        return tostring(table)
+    end
+end
