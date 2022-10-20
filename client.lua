@@ -223,10 +223,3 @@ function removeFromSlot(hash)
     end
 end
 
-AddEventHandler('esx:onPlayerSpawn', function()
-    local ped = PlayerPedId()
-    if isDead then
-        isDead = false
-        exports['obackweapon']:respawningCheckWeapon()
-    end
-end)
