@@ -186,6 +186,7 @@ AddEventHandler('ox_inventory:updateInventory', function(changes)
     end
 end)
 
+--working on the next two event handlers to make this thing better
 -- lib.onCache('vehicle', function(value)
 --     for k, v in pairs(Weapons) do
 --         local count = exports.ox_inventory:Search(2, v.item)
