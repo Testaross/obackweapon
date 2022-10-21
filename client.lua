@@ -186,11 +186,22 @@ AddEventHandler('ox_inventory:updateInventory', function(changes)
     end
 end)
 
+-- lib.onCache('vehicle', function(value)
+--     for k, v in pairs(Weapons) do
+--         local count = exports.ox_inventory:Search(2, v.item)
+--         if value then
+--             removeFromInv(k)
+--         else
+--             putOnBack(k)
+--         end
+--     end
+-- end)
+
+
 -- AddEventHandler('ox_inventory:updateInventory', function(changes)
 --     print(json.encode(changes,{indent=true}))
---     if (type(changes) == 'table') then print('boolean') return end
 --     for k, v in pairs(changes) do 
---         if (type(changes) == 'table') then print('boolean') return end
+--         if (type(v) == 'table') then print('boolean') return end
 --         print(v.name)
 --         print(v.count)
 --     end
