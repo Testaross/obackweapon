@@ -71,12 +71,9 @@ local slots = {
 
 AddEventHandler('ox_inventory:currentWeapon', function(data)
     if data then
-        for k, v in pairs (Weapons) do
-            if k == data.hash then
-                print(data.hash)
-                curWeapon = data.hash
-                removeWeapon(data.hash)
-            end
+        if Weapons[data.hash] then
+            curWeapon = data.hash
+            removeWeapon(data.hash)
         end
     else
         if curWeapon then
@@ -86,15 +83,13 @@ AddEventHandler('ox_inventory:currentWeapon', function(data)
 end)
 
 
-function removeWeapon(hash)
-    for k, v in pairs(Weapons) do
-        if hash == k then
-            removeFromSlot(hash)
-        end
+local function removeWeapon(hash)
+    if Weapons[hash] then
+        removeFromSlot(hash)
     end
 end
 
-function removeFromInv(hash)
+local function removeFromInv(hash)
     removeFromSlot(hash)
 end
 
@@ -170,11 +165,6 @@ function removeFromSlot(hash)
                 DeleteEntity(v.entity)
                 slots[k].entity = nil
                 slots[k].hash = nil  
-            elseif inCar then
-                DetachEntity(v.entity)
-                DeleteEntity(v.entity)
-                slots[k].entity = nil
-                slots[k].hash = nil  
             end
         end
     end
@@ -191,23 +181,30 @@ AddEventHandler('ox_inventory:updateInventory', function(changes)
     end
 end)
 
+local function clearSlot(i)
+    DetachEntity(slots[i].entity)
+    DeleteEntity(slots[i].entity)
+    slots[i].entity = nil
+    slots[i].hash = nil
+    slots[i].wep = nil
+end
+
 --working on the next event handler to make this thing better
 lib.onCache('vehicle', function(value)
     if value then
-        inCar = true
-        for k, v in pairs(Weapons) do
-            removeFromInv(k)
+        for i = 1, #slots do
+            clearSlot(i)
         end
     else
-        inCar = false
         for k, v in pairs(Weapons) do
-            local count = exports.ox_inventory:Search(2, v.item)
-            if count > 0 and curWeapon == nil then
+            local count = ox_inventory:Search(2, v.item)
+            if count and count >= 1 then
                 putOnBack(k)
             end
         end
-    end   
+    end
 end)
+
 
 
 -- AddEventHandler('ox_inventory:updateInventory', function(changes)
