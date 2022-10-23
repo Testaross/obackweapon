@@ -9,10 +9,9 @@ version      '0.0.0'
 author       'Kallock'
 description   'original code by kallock, being expanded upon by testarossa'
 
+shared_script '@ox_lib/init.lua'
 
 --[[ Manifest ]]--
-
 client_scripts {
 	'client.lua',
 }
-
