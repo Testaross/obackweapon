@@ -1,4 +1,5 @@
 local curWeapon = nil
+local ox_inventory = exports.ox_inventory
 
 local Weapons = {
     [`weapon_assaultshotgun`] = { object = `w_sg_assaultshotgun`, item = 'WEAPON_ASSAULTSHOTGUN', rot = vector3(0,0,0)},
@@ -117,7 +118,7 @@ function respawningCheckWeapon()
                     DeleteEntity(v.entity)
             end
             local whatItem = Weapons[v.hash].item
-            local count = exports.ox_inventory:Search(2, whatItem)
+            local count = ox_inventory:Search(2, whatItem)
             local oldHash = v.hash
             v.entity = nil
             v.hash = nil
@@ -152,7 +153,7 @@ end
 
 function removeFromSlot(hash)
     local whatItem = Weapons[hash].item
-    local count = exports.ox_inventory:Search(2, whatItem)
+    local count = ox_inventory:Search(2, whatItem)
     for k, v in pairs(slots) do
         if v.hash == hash then
             if count <= 0 then
@@ -172,7 +173,7 @@ end
 
 AddEventHandler('ox_inventory:updateInventory', function(changes)
     for k, v in pairs(Weapons) do
-        local count = exports.ox_inventory:Search(2, v.item)
+        local count = ox_inventory:Search(2, v.item)
         if count > 0 and curWeapon == nil then
             putOnBack(k)
         else
