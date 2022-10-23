@@ -170,6 +170,11 @@ function removeFromSlot(hash)
                 DeleteEntity(v.entity)
                 slots[k].entity = nil
                 slots[k].hash = nil  
+            elseif inCar then
+                DetachEntity(v.entity)
+                DeleteEntity(v.entity)
+                slots[k].entity = nil
+                slots[k].hash = nil  
             end
         end
     end
@@ -185,24 +190,36 @@ AddEventHandler('ox_inventory:updateInventory', function(changes)
         end
     end
 end)
---working on the next two event handlers to make this thing better
--- lib.onCache('vehicle', function(value)
---     for k, v in pairs(Weapons) do
---         local count = exports.ox_inventory:Search(2, v.item)
---         if value then
---             removeFromInv(k)
---         else
---             putOnBack(k)
---         end
---     end
--- end)
+
+--working on the next event handler to make this thing better
+lib.onCache('vehicle', function(value)
+    if value then
+        inCar = true
+        for k, v in pairs(Weapons) do
+            removeFromInv(k)
+        end
+    else
+        inCar = false
+        for k, v in pairs(Weapons) do
+            local count = exports.ox_inventory:Search(2, v.item)
+            if count > 0 and curWeapon == nil then
+                putOnBack(k)
+            end
+        end
+    end   
+end)
 
 
 -- AddEventHandler('ox_inventory:updateInventory', function(changes)
---     print(json.encode(changes,{indent=true}))
 --     for k, v in pairs(changes) do 
---         if (type(v) == 'table') then print('boolean') return end
---         print(v.name)
---         print(v.count)
+--         if (type(v) == 'table') then 
+--             local hash = joaat(v.name)
+--             name11 = hash
+--             if curWeapon == nil then
+--                 putOnBack(hash)
+--             end
+--         else 
+--             removeFromInv(name11)
+--         end
 --     end
 -- end)
