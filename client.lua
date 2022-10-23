@@ -178,14 +178,13 @@ end
 AddEventHandler('ox_inventory:updateInventory', function(changes)
     for k, v in pairs(Weapons) do
         local count = exports.ox_inventory:Search(2, v.item)
-        if count > 0 then
+        if count > 0 and curWeapon == nil then
             putOnBack(k)
         else
             removeFromInv(k)
         end
     end
 end)
-
 --working on the next two event handlers to make this thing better
 -- lib.onCache('vehicle', function(value)
 --     for k, v in pairs(Weapons) do
@@ -207,33 +206,3 @@ end)
 --         print(v.count)
 --     end
 -- end)
-
-function DumpTable(table, nb)
-    if nb == nil then
-        nb = 0
-    end
-
-    if type(table) == 'table' then
-        local s = ''
-        for i = 1, nb + 1, 1 do
-            s = s .. "    "
-        end
-
-        s = '{\n'
-        for k, v in pairs(table) do
-            if type(k) ~= 'number' then k = '"' .. k .. '"' end
-            for i = 1, nb, 1 do
-                s = s .. "    "
-            end
-            s = s .. '[' .. k .. '] = ' .. DumpTable(v, nb + 1) .. ',\n'
-        end
-
-        for i = 1, nb, 1 do
-            s = s .. "    "
-        end
-
-        return s .. '}'
-    else
-        return tostring(table)
-    end
-end
