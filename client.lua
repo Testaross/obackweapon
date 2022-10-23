@@ -68,7 +68,11 @@ local slots = {
 
 }
 
-
+local function removeWeapon(hash)
+    if Weapons[hash] then
+        removeFromSlot(hash)
+    end
+end
 
 AddEventHandler('ox_inventory:currentWeapon', function(data)
     if data then
@@ -83,12 +87,6 @@ AddEventHandler('ox_inventory:currentWeapon', function(data)
     end
 end)
 
-
-local function removeWeapon(hash)
-    if Weapons[hash] then
-        removeFromSlot(hash)
-    end
-end
 
 local function removeFromInv(hash)
     removeFromSlot(hash)
@@ -206,7 +204,17 @@ lib.onCache('vehicle', function(value)
     end
 end)
 
-
+lib.onCache('ped', function(value)
+    Wait(1000)
+    if value then
+        for k, v in pairs(Weapons) do
+            local count = ox_inventory:Search(2, v.item)
+            if count and count >= 1 then
+                putOnBack(k)
+            end
+        end
+    end
+end)
 
 -- AddEventHandler('ox_inventory:updateInventory', function(changes)
 --     for k, v in pairs(changes) do 
