@@ -74,18 +74,7 @@ local function removeWeapon(hash)
     end
 end
 
-AddEventHandler('ox_inventory:currentWeapon', function(data)
-    if data then
-        if Weapons[data.hash] then
-            curWeapon = data.hash
-            removeWeapon(data.hash)
-        end
-    else
-        if curWeapon then
-            putOnBack(curWeapon)
-        end
-    end
-end)
+
 
 
 local function removeFromInv(hash)
@@ -187,6 +176,19 @@ local function clearSlot(i)
     slots[i].hash = nil
     slots[i].wep = nil
 end
+
+AddEventHandler('ox_inventory:currentWeapon', function(data)
+    if data then
+        if Weapons[data.hash] then
+            curWeapon = data.hash
+            removeWeapon(data.hash)
+        end
+    else
+        if curWeapon then
+            putOnBack(curWeapon)
+        end
+    end
+end)
 
 --working on the next event handler to make this thing better
 lib.onCache('vehicle', function(value)
