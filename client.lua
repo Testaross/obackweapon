@@ -158,21 +158,7 @@ local function clearSlot(i)
     slots[i].wep = nil
 end
 
-local function putOnBack(hash)
-    local whatSlot = checkForSlot(hash)
-    if whatSlot then
-        curWeapon = nil
-        local object = Weapons[hash].object
-        local item = Weapons[hash].item
-        lib.requestModel(object, 500)
-        local coords = GetEntityCoords(ped)
-        local prop = CreateObject(object, coords.x, coords.y, coords.z,  true,  true, true)
-        slots[whatSlot].entity = prop
-        slots[whatSlot].hash = hash
-        slots[whatSlot].wep = item
-        AttachEntityToEntity(prop, ped, GetPedBoneIndex(ped, 24816), slots[whatSlot].pos.x, slots[whatSlot].pos.y, slots[whatSlot].pos.z, Weapons[hash].rot.x, Weapons[hash].rot.y, Weapons[hash].rot.z, true, true, false, true, 2, true)
-    end
-end
+
 
 local function putOnBack(hash)
     local whatSlot = checkForSlot(hash)
