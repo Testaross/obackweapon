@@ -212,6 +212,7 @@ end
 AddEventHandler('ox_inventory:currentWeapon', function(data)
     if data then
         if Weapons[data.hash] then
+            putOnBack(curWeapon)
             curWeapon = data.hash
             removeWeapon(data.hash)
         end
