@@ -1,7 +1,7 @@
-The base of the script it from Kallock
+The base of the script was from Kallock
 https://discord.gg/CUKzxyYvyt
+He is a great dev, buy his stuff.
 
-https://kallock.tebex.io/
-He is a great dev, buy his stuff. I took this from his discord so it was easier to share. 
+Completely refactored the usage of it with ox_inventory
 
 I updated it to use listeners instead of having to edit the inventory items, making this basically drag and drop, this is only dependent on ox_lib and ox_inventory
