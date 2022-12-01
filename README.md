@@ -1,3 +1,6 @@
+https://discord.gg/bJSW7k4aAP
+
+
 The base of the script was from Kallock
 https://discord.gg/CUKzxyYvyt
 He is a great dev, buy his stuff.
