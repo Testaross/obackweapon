@@ -1,3 +1,5 @@
+**This uses illenium-appearance to make sure props aren't stuck to you**
+
 https://discord.gg/bJSW7k4aAP
 
 
