@@ -1,3 +1,5 @@
+**Modified to fix stuck weapons/issues with props being stuck to characters**
+
 https://discord.gg/bJSW7k4aAP
 
 
