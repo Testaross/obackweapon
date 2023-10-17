@@ -51,27 +51,44 @@ local Weapons = {
 
 local slots = {
     [1] = {
-        pos = vec3(0.13, -0.19, -0.04), -- Center Of Back
+        pos = vec3(0.14, -0.17, 0.0), -- Center Of Back
         entity = nil,
         hash = nil,
         wep = nil
     },
     [2] = {
-        pos = vec3(0.13, -0.15, -0.16), -- Center-Right
+        pos = vec3(0.14, 0.16, 0.0), -- Chest (front)
         entity = nil,
         hash = nil,
         wep = nil
     },
     [3] = {
-        pos = vec3(0.13, -0.15, 0.07), -- Center-Left
+        pos = vec3(0.14, -0.21, 0.0), -- Center of Back, on top of other gun
         entity = nil,
+        hash = nil,
+        wep = nil
+    },
+    [4] = {
+        pos = vec3(0.14, 0.20, 0.0), -- Chest (front) on top of other front gun
         hash = nil,
         wep = nil
     },
 }
 
+AddEventHandler('onResourceStop', function(resourceName) -- deletes weapons on back when script is stopped
+    if (GetCurrentResourceName() == resourceName) then
+        for i = 1, #slots do
+            local slot = slots[i]
+            if slot.entity ~= nil then
+                SetEntityAsMissionEntity(slot.entity, false, false)
+                NetworkRequestControlOfEntity(slot.entity)
+                DeleteEntity(slot.entity)
+            end
+        end
+    end
+end)
+
 local function clearSlot(i)
-    DetachEntity(slots[i].entity)
     DeleteEntity(slots[i].entity)
     slots[i].entity = nil
     slots[i].hash = nil
@@ -114,7 +131,6 @@ local function checkForSlot(hash)
     return false
 end
 
-
 local function putOnBack(hash)
     local whatSlot = checkForSlot(hash)
     if whatSlot then
@@ -131,26 +147,9 @@ local function putOnBack(hash)
     end
 end
 
-local function respawningCheckWeapon()
-    for i = 1, #slots do
-        local slot = slots[i]
-        if slot.entity ~= nil then
-            if DoesEntityExist(slot.entity) then
-                DeleteEntity(slot.entity)
-            end
-            local whatItem = Weapons[slot.hash].item
-            local count = ox_inventory:Search(2, whatItem)
-            local oldHash = slot.hash
-            slots[i].entity = nil
-            slots[i].hash = nil
-            if count > 0 then
-                putOnBack(oldHash)
-            end
-        end
-    end
-end
-
 AddEventHandler('ox_inventory:currentWeapon', function(data)
+    if not LocalPlayer.state.isLoggedIn then return end
+
     if data then
         if Weapons[data.hash] then
             putOnBack(curWeapon)
@@ -164,9 +163,9 @@ AddEventHandler('ox_inventory:currentWeapon', function(data)
     end
 end)
 
-
-
 AddEventHandler('ox_inventory:updateInventory', function(changes)
+    if not LocalPlayer.state.isLoggedIn then return end
+
     playerLoaded = true
     for k, v in pairs(changes) do
         if type(v) == 'table' then
@@ -210,5 +209,81 @@ lib.onCache('ped', function(value)
     ped = value
 end)
 
+CreateThread(function() 
+    while not LocalPlayer.state.isLoggedIn do Wait(1000) end
+
+    Wait(3000)
+
+    local PlayerData = QBCore.Functions.GetPlayerData()
+
+    for k, v in pairs(PlayerData.items) do
+        local hash = joaat(v.name)
+
+        if Weapons[hash] then
+            putOnBack(hash)
+        end
+    end
+
+    while true do
+        Wait(250)
+        if LocalPlayer.state.isLoggedIn then
+            for k, v in pairs(slots) do
+                if v.wep then
+                    local entexists = DoesEntityExist(v.entity)
+                    local entattached = entexists and IsEntityAttachedToEntity(v.entity, ped)
+                    local entmodel = entexists and entattached and GetEntityModel(v.entity)
+
+                    if v.entity == 0 or not entexists or not entattached or Weapons[v.hash].object ~= entmodel then
+                        if entexists and not entattached then
+                            SetEntityAsMissionEntity(v.entity, false, false)
+                            NetworkRequestControlOfEntity(v.entity)
+                            DeleteEntity(v.entity)
+                        end
+
+                        lib.requestModel(Weapons[v.hash].object, 500)
+                        local coords = GetEntityCoords(ped)
+                        local prop = CreateObject(Weapons[v.hash].object, coords.x, coords.y, coords.z,  true,  true, true)
+                        slots[k].entity = prop
+                        slots[k].hash = v.hash
+                        AttachEntityToEntity(prop, ped, GetPedBoneIndex(ped, 24816), slots[k].pos.x, slots[k].pos.y, slots[k].pos.z, Weapons[v.hash].rot.x, Weapons[v.hash].rot.y, Weapons[v.hash].rot.z, true, true, false, true, 2, true)
+
+                    end
+                end
+            end
+        end
+    end
+end)
+
+RegisterCommand('propstuck', function()
+    clearingProps = true
+    SetTimeout(500, function()
+        clearingProps = false
+    end)
+
+    local objects = GetGamePool('CObject')    
+
+    for k, v in pairs(objects) do
+        if IsEntityAttachedToEntity(v, ped) and v ~= GetCurrentPedWeaponEntityIndex(ped) then
+            SetEntityAsMissionEntity(v, false, false)
+            NetworkRequestControlOfEntity(v)
+            DeleteEntity(v)
+        end
+    end
+end)
+
+RegisterCommand('propdrop', function()
+    clearingProps = true
+    SetTimeout(500, function()
+        clearingProps = false
+    end)
+
+    local objects = GetGamePool('CObject')    
+
+    for k, v in pairs(objects) do
+        if IsEntityAttachedToEntity(v, ped) and v ~= GetCurrentPedWeaponEntityIndex(ped) then
+            DetachEntity(v)
+        end
+    end
+end)
 
 
